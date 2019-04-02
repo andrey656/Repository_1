@@ -2,15 +2,16 @@
 using namespace std;
 int main()
 {
-    int sum = 0;
-	cout<<"Введите последовательность: "<< endl;
-    for (int n = ~0; n != 0; cin >> n) {
-        if (n > 0) {
-            sum += n;
-        }
-    }
-    cout <<"Сумма положительных чисел: " <<sum << endl;
-    return 0;
+
+	int a, summ = 0;
+	cout << "Введите последовательность:\n";
+	cin >> a;
+	while ( a != 0) {
+		if (a > 0) {
+			summ += a;
+		}
+		cin >> a;
+	}
+	cout << "Сумма положительных чисел:" << summ << endl;
+	return 0;
 }
-
-
