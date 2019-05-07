@@ -1,0 +1,68 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+class String
+{
+private:
+	char *d;
+	int v;
+public:
+	String():d(new char [1] {}),v(0) {
+		}
+	String(const char* s) {//Конструктор инициализации Си-строкой
+		v = strlen(s);
+		d = new char[v+1];
+		strcpy(d,s);
+	}
+	String(const String &copy) {//Конструктор копирования
+		v = copy.v;
+		d = new char [v +1];
+		strcpy(d, copy.d);
+	}
+	~String() {//Деструктор
+		delete[] d;
+	}
+	String operator + (const String & r) {// перегруженный бинарный operator+ 
+		char *s=new char [v + r.v +1];
+		String soi(strcat(strcpy(s,d),r.d));
+		delete[] s;
+		return soi;
+	}
+		
+	String operator-() const {
+		String minus;
+		minus.v=v;
+		delete[] minus.d;
+		minus.d=new char[v+1];
+		for (int i=0; i<v; i++)
+			minus.d[i]=d[v-i-1];
+		minus.d[v]=0;
+		return minus;
+	}
+	String& operator = (const String& right) {
+		v = right.v;
+		delete[] d;
+		d = new char[v+1];
+		strcpy(d, right.d);
+		return *this;
+	}
+	friend istream& operator>> (istream& out, String &org);
+	friend ostream& operator<< (ostream& out, const String &org);
+};
+istream& operator>> (istream& out, String &org)//Перегруженный operator>>
+{
+	out>>org.d;
+	return out;
+}
+ostream& operator<< (ostream& out, const String &org)//Перегруженный operator<<
+{
+	out<<org.d;
+	return out;
+}
+int main() 
+	{
+		String s ="Andrei";
+		s= -s;
+		cout <<	s<<endl;
+		return 0;
+	}

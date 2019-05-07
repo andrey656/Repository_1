@@ -1,0 +1,39 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+class String
+{
+private:
+	char *d;
+	int v;
+public:
+	String():d(new char [1] {}),v(0) { //Конструктор по умолчанию
+	}
+	String(const char* s) {//Конструктор инициализации Си-строкой
+		v = strlen(s);
+		d = new char[v+1];
+		strcpy(d,s);
+	}
+	String(const String &copy) { //Конструктор копирования
+		v = copy.v;
+		d = new char [v +1];
+		strcpy(d, copy.d);
+	}
+	~String() { //Деструктор
+		delete[] d;
+	}
+	String(char * x): d(x) {
+	}
+	friend ostream& operator<< (ostream &out, const String &string1);//Перегруженныq оператор operator<<
+};
+ostream& operator<< (ostream &out, const String &string1)
+{
+	out << string1.d;
+	return out;
+}
+int main()
+{
+	String string1("Плакин.А.А 18пт1 \n");
+	cout << string1;
+	return 0;
+}
