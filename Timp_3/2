@@ -1,0 +1,103 @@
+#include <unittest++/UnitTest++.h>
+#include "Cipher.h"
+
+struct Key4_fixture {
+	Cipher* k;
+	Key4_fixture() {
+		k = new Cipher(4);
+	}
+	~Key4_fixture() {
+		delete k;
+	}
+};
+SUITE(KeyTest)
+{
+	TEST(ValidKrKey) {
+		CHECK_EQUAL("kniaaelnrpid",Cipher(4).encrypt("plakinandrei"));
+	}
+	TEST(ValidNotKrKey) {
+		CHECK_EQUAL("ir*kd*an*laipne",Cipher(5).encrypt("plakinandrei"));
+	}
+
+	TEST(NotIntKey) {
+		CHECK_EQUAL("kniaaelnrpid",Cipher(4.8).encrypt("plakinandrei"));
+	}
+	TEST(ZeroKey) {
+
+		CHECK_THROW(Cipher cp(0),Error);
+	}
+	TEST(WeakKey) {
+		CHECK_THROW(Cipher cp(1),Error);
+	}
+	TEST(NegativeKey) {
+		CHECK_THROW(Cipher cp(-4),Error);
+	}
+}
+SUITE(EncryptTest)
+{
+	TEST_FIXTURE(Key4_fixture, UpCaseString) {
+		CHECK_EQUAL("KNIAAELNRPID", k->encrypt("PLAKINANDREI"));
+	}
+	TEST_FIXTURE(Key4_fixture, LowCaseString) {
+		CHECK_EQUAL("kniaaelnrpid", k->encrypt("plakinandrei"));
+	}
+	TEST_FIXTURE(Key4_fixture, LowAndUpCaseString) {
+		CHECK_EQUAL("kniaAelnrPid", k->encrypt("PlakinAndrei"));
+	}
+	TEST_FIXTURE(Key4_fixture, noAlphaString) {
+		CHECK_THROW(k->encrypt("123+123=246"),Error);
+	}
+
+	TEST_FIXTURE(Key4_fixture, digitString) {
+
+		CHECK_THROW(k->encrypt("plakin2000andrei"), Error);
+	}
+	TEST_FIXTURE(Key4_fixture, EmptyString) {
+		CHECK_THROW(k->encrypt(""),Error);
+	}
+	TEST_FIXTURE(Key4_fixture, SpaceAndPunctString) {
+		CHECK_THROW(k->encrypt("plakin andrei!!!"),Error);
+	}
+	TEST_FIXTURE(Key4_fixture, ShortString) {
+		CHECK_THROW(k->encrypt("six"),Error);
+	}
+	TEST_FIXTURE(Key4_fixture, EqualKeyString) {
+		CHECK_THROW(k->encrypt("pink"),Error);
+	}
+}
+SUITE(DecryptTest)
+{
+	TEST_FIXTURE(Key4_fixture, UpCaseString) {
+		CHECK_EQUAL("PLAKINANDREI", k->decrypt("KNIAAELNRPID"));
+	}
+	TEST_FIXTURE(Key4_fixture, LowCaseString) {
+		CHECK_EQUAL("plakinandrei", k->decrypt("kniaaelnrpid"));
+	}
+	TEST_FIXTURE(Key4_fixture, LowAndUpCaseString) {
+
+		CHECK_EQUAL("PlakinAndrei", k->decrypt("kniaAelnrPid"));
+	}
+
+	TEST_FIXTURE(Key4_fixture, digitString) {
+		CHECK_THROW(k->decrypt("knia,AelnrPid"), Error);
+	}
+	TEST_FIXTURE(Key4_fixture, PunctString) {
+		CHECK_THROW(k->decrypt("kniaaelnrpid4564"),Error);
+	}
+	TEST_FIXTURE(Key4_fixture, EmptyString) {
+		CHECK_THROW(k->decrypt(""),Error);
+	}
+	TEST_FIXTURE(Key4_fixture, SpaceString) {
+		CHECK_THROW(k->decrypt("knia AelnrPid"),Error);
+	}
+	TEST_FIXTURE(Key4_fixture, ShortString) {
+		CHECK_THROW(k->decrypt("six"),Error);
+	}
+	TEST_FIXTURE(Key4_fixture, EqualKeyString) {
+		CHECK_THROW(k->decrypt("pink"),Error);
+	}
+}
+int main(int argc, char **argv)
+{
+	return UnitTest::RunAllTests();
+}

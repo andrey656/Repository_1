@@ -1,0 +1,14 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std; 
+int main()
+{
+    ifstream input("1.txt"); 
+    string string; 
+    ofstream output("2.txt", ios::app); 
+    while(getline(input, string))  
+        output << string << endl;  
+   
+    return 0;
+}

@@ -1,0 +1,27 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+int main()
+{
+	const int hdec = 10, hoct = 7, hhex = 15;
+	int i = 0;
+	cout<<endl<<"Восьмиричная таблица "<<endl;
+	for(i = 0; i < hoct*hoct; i++) {
+		cout << setw(4) << oct << (i/hoct + 1)*(i%hoct + 1);
+
+		if((i + 1)%hoct == 0) cout << endl;
+	}
+	cout<<"Десятичная таблица "<<endl;
+	for(i = 0; i < hdec*hdec; i++) {
+		cout << setw(4) << dec << (i/hdec + 1)*(i%hdec + 1);
+
+		if((i + 1)%hdec == 0) cout << endl;
+	}
+	cout<<endl<<"Шестнадцатеричная таблица "<<endl;
+	for(i = 0; i < hhex*hhex; i++) {
+		cout << setw(4) << hex << (i/hhex + 1)*(i%hhex+ 1);
+
+		if((i + 1)%hhex == 0) cout << endl;
+	}
+	return 0;
+}

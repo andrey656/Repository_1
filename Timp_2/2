@@ -1,0 +1,115 @@
+#include <iostream>
+#include <cctype>
+#include "Cipher.h"
+using namespace std;
+int main(int argc, char **argv)
+{
+	int key;
+	string text;
+	unsigned op;
+	do {
+		try {
+			cout<<"Input operation (0-exit, 1-encrypt, 2-decrypt): ";
+			cin>>op;
+			if (op > 2)
+				cout<<"Illegal operation\n";
+			else if (op > 0) {
+				cout<<"Input text: ";
+				cin>>text;
+				cout<<"Input key: ";
+				cin>>key;
+				Cipher cipher(key, text);
+				if (op==1) {
+					cout<<"Encrypted text: "<<cipher.encrypt(text)<<endl;
+				} else {
+					cout<<"Decrypted text: "<<cipher.decrypt(text)<<endl;
+				}
+			}
+			
+		} catch (const Error & e) {
+			cerr<<"Error: "<<e.what()<<endl;
+		}
+	} while (op != 0);
+	return 0;
+}
+
+Заголовочный файл модифицированного модуля "шифратора":
+#pragma once
+#include <string>
+#include <stdexcept>
+using namespace std;
+class Cipher
+{
+	char** value;
+	int S, D;
+	string getValidText(const string& s);
+public:
+	Cipher() = delete;
+	Cipher(int key, const string& s);
+	string encrypt(const string& open_text);
+	string decrypt(const string& cipher_text);
+	~Cipher();
+};
+class Error: public invalid_argument
+{
+public:
+	explicit Error (const string& what_arg):invalid_argument(what_arg) {}
+	explicit Error (const char* what_arg):invalid_argument(what_arg) {}
+};
+Модифицированный модуль "шифратора":
+#include "Cipher.h"
+Cipher::Cipher(int key, const string& s)
+{
+	if (key < 2 or key > getValidText(s).size())
+		throw Error(string("Invalid key"));
+	D = key;
+	S = ((getValidText(s).size() - 1)/D + 1);
+	value = new char * [S];
+	for (int i = 0; i < S; i++) {
+		value[i] = new char [D];
+	}
+}
+string Cipher::encrypt(const string& open_text)
+{
+	for (int i=0; i < S; i++)
+		for (int j=0; j < D; j++)
+			value[i][j] = '*';
+	for (int i = 0; i < getValidText(open_text).size();i++)
+		value[i/D][i%D] = getValidText(open_text)[i];
+	string cipher_text;
+	for (int i = D - 1; i >= 0; i --)
+		
+		for (int j = 0; j < S; j++)
+			cipher_text = cipher_text + value[j][i];
+	return cipher_text;
+}
+string Cipher::decrypt(const string& cipher_text)
+{
+	for (int i=0; i < S; i++)
+		for (int j=0; j < D; j++)
+			value[i][j] = '*';
+	for (int i = 0; i < getValidText(cipher_text).size(); i++)
+		value[i%S][i/S] = getValidText(cipher_text)[i];string open_text;
+	for (int i = 0; i < S; i ++)
+		for (int j = D - 1; j >= 0; j--)
+			open_text = open_text + value[i][j];
+	return open_text;
+}
+Cipher::~Cipher()
+{
+	for (int i = 0; i < S; i++) {
+		delete [] value[i];
+	}
+	delete [] value;
+}
+string Cipher::getValidText(const string& s)
+ {
+	string tmp(s);
+	if (s.empty())
+		throw Error("Empty text");
+	for (auto c:tmp)
+		if (!isalpha(c)) {
+			throw Error(string("Invalid text"));
+		}
+	return tmp;
+}

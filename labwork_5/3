@@ -1,0 +1,23 @@
+#include <fstream>
+#include <iostream>
+#include <iomanip>
+using namespace std;
+int main()
+{
+	long i, n;		
+	int a[10];
+	ifstream fout("fail.txt");
+    for (int i = 0; i < 10; i++)
+    {
+        fout >> a[i];
+    }
+	fout.close();
+	for(i=0; i<10; i++) {
+		n=a[i];
+		cout<< setw (7) << hex << n;
+		cout<< setw (7) << oct << n;
+		cout << setw (7) << dec << n;
+		cout << endl;
+	}
+	return 0;
+}

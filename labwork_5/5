@@ -1,0 +1,33 @@
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+using namespace std;
+int main()
+{
+ifstream instrm ("1.bin", ios::binary);
+double j;
+int n =0;
+while (instrm.read((char *)&j,sizeof(j))){
+	n++;
+}
+	instrm.close();
+cout<<"number of digits: ";
+cout<<n<<endl;
+float* t = new float[n];
+ifstream instrm2 ("1.bin", ios::binary);
+instrm2.read((char *)t, sizeof(t));  
+for(int i = 0; i < n; i++){
+	t[i]=1/t[i];
+cout << t[i] ;
+cout << '\n';
+}
+instrm2.close(); 
+ofstream onstrm ("2.bin", ios::binary);
+onstrm.write((char *)t, sizeof(t)); 
+onstrm.close(); 
+for(int i = 0; i < n; i++){
+cout << t[i] ;
+cout << '\n';
+}
+return 0;
+}
